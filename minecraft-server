@@ -1,0 +1,82 @@
+#!/bin/bash
+
+set -eo pipefail
+
+subcommand="$1"
+session_name="$2"
+minecraft_dir='/srv/minecraft'
+server_root="$minecraft_dir/$session_name"
+cd "$server_root"
+[ "$(whoami)" != "minecraft" ] && sudo_cmd="sudo -u minecraft"
+
+session_exists() {
+    # Returns zero if the session_name exists
+    $sudo_cmd screen -S "$session_name" -Q 'select' . > /dev/null
+}
+
+game_command() {
+    # Assumes the session exists
+    $sudo_cmd screen -S "$session_name" -X stuff "$(printf "%s\r" "$*")"
+}
+
+start_server() {
+    if session_exists; then
+        echo "$session_name already exists. Stop the running session before starting another." >&2
+    else
+        echo -n "Starting $session_name minecraft server..."
+        $sudo_cmd screen -dmS "$session_name" /bin/bash -c "cd ${server_root}; java -XX:ParallelGCThreads=1 -Xmx3G -jar minecraft_server.jar nogui"
+        echo " Done"
+    fi
+}
+
+stop_server() {
+    if session_exists; then
+        echo -n "Stopping server..."
+        game_command stop
+        echo " Done"
+    else
+        echo "Session doesn't exist" >&2
+    fi
+}
+
+open_console() {
+    if session_exists; then
+        $sudo_cmd screen -S "$session_name" -rx
+    else
+        echo "Session doesn't exist" >&2
+    fi
+}
+
+usage() {
+    cat <<-EOF
+Minecraft server management script for servers in $minecraft_dir
+
+Usage: minecraft-server (start|stop|console) SESSION_NAME
+    start                Start the server
+    stop                 Stop the server
+    console              Enter the server console through a screen session
+
+SESSION_NAME is the name of a minecraft server listed in $minecraft_dir
+EOF
+}
+
+case "$subcommand" in
+    start)
+        start_server
+    ;;
+    stop)
+        stop_server
+    ;;
+    console)
+        open_console
+    ;;
+    -h|--help)
+        usage
+        exit 0
+    ;;
+    *)
+        usage
+        exit 1
+    ;;
+esac
+
