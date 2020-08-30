@@ -1,0 +1,10 @@
+_minecraft-server_completions() {
+    if [[ $COMP_CWORD -eq 1 ]]; then
+        COMPREPLY=($(compgen -W "start stop console backup" "${COMP_WORDS[1]}"))
+    elif [[ $COMP_CWORD -eq 2 ]]; then
+        COMPREPLY=($(compgen -W "$(find /srv/minecraft/ -maxdepth 1 -type l -exec basename {} \;)" "${COMP_WORDS[2]}"))
+    fi
+}
+
+complete -F _minecraft-server_completions minecraft-server
+
