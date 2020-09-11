@@ -1,0 +1,35 @@
+.Dd May 15, 2020
+.Dt MINECRAFT-SERVER 1
+.Os Linux
+.Sh NAME
+.Nm minecraft-server
+.Nd Minecraft server management utility
+.Sh SYNOPSIS
+.Nm minecraft-server
+.Ar COMMAND
+.Ar SESSION_NAME
+.Sh DESCRIPTION
+.Nm
+is a utility for managing multiple minecraft servers. It can start or stop a server as well as connect to the server console. This is the preferred method for managing Minecraft servers because it manages a screen session for each server. You can reconnect to any server console any time using this utility.
+.Sh OPTIONS
+.Ss Va COMMAND
+can be one of the following values
+.Bl -tag -width Ds
+.It start
+Start the Minecraft server named by the specified
+.Va SESSION_NAME .
+.It stop
+Start the Minecraft server named by the specified
+.Va SESSION_NAME .
+.It console
+View the console of the Minecraft server specified by
+.Va SESSION_NAME .
+.It backup
+Start a backup of the world directory for the specified
+.Va SESSION_NAME .
+.El
+.Ss SESSION_NAME
+Refers to a link in
+.Pa /srv/minecraft/
+.Sh AUTHOR
+Jason R. Carrete <jasoncarrete5@gmail.com>
