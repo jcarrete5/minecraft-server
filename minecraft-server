@@ -50,7 +50,7 @@ backup() {
     KEEP_BACKUPS=48
     BACKUP_DEST=backups
     mkdir -p $BACKUP_DEST
-    cur_date="$(date +%y-%m-%d_%H:%M:%S)"
+    cur_date="$(date +%y-%m-%d_%H-%M-%S)"
 
     game_command save-off
     game_command save-all
@@ -69,10 +69,10 @@ backup() {
     # Check for old backups
     backup_count="$(ls -1q | wc -l)"
     if [[ $(( backup_count - KEEP_BACKUPS )) -gt 0 ]]; then
-        for old_backup in $(for f in "${BACKUP_DEST}"/[0-9:-]*; do echo "${f}"; done | head -n"$(( backup_count - KEEP_BACKUPS ))"); do
+        for old_backup in $(for f in "${BACKUP_DEST}"/[0-9-]*; do echo "${f}"; done | head -n"$(( backup_count - KEEP_BACKUPS ))"); do
             ${SUDO_CMD} rm "${old_backup}";
         done
-        echo -e "Done ($(( backup_count - KEEP_BACKUPS)) backup(s) pruned)"
+        echo -e "Done ($(( backup_count - KEEP_BACKUPS )) backup(s) pruned)"
     else
         echo -e "Done (no backups pruned)"
     fi
