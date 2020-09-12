@@ -1,0 +1,13 @@
+[Unit]
+Description=Minecraft Server
+After=local-fs.target network.target multi-user.target
+
+[Service]
+Type=forking
+User=minecraft
+Group=minecraft
+ExecStart=/usr/local/bin/minecraft-server start %i
+ExecStop=/usr/local/bin/minecraft-server stop %i
+
+[Install]
+WantedBy=multi-user.target

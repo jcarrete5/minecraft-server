@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Minecraft Server Backup
+
+[Timer]
+OnCalendar=hourly
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target
